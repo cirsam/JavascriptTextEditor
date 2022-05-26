@@ -1,0 +1,79 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <style>
+        #textarea{
+            height:200px;
+        }
+
+        #bold{
+            font-weight:bold;
+        }
+    </style>
+    <script>
+        function getCaretCharacterOffsetWithin(element) {
+            var caretOffset = 0;
+            var doc = element.ownerDocument || element.document;
+            //var win = doc.defaultView || doc.parentWindow;
+            var sel;
+            if (typeof window.getSelection != "undefined") {
+                sel = window.getSelection();
+                if (sel.rangeCount > 0) {
+                    var range = window.getSelection().getRangeAt(0);
+                    var preCaretRange = range.cloneRange();
+                    preCaretRange.selectNodeContents(element);
+                    preCaretRange.setEnd(range.endContainer, range.endOffset);
+                    caretOffset = preCaretRange.toString().length;
+                }
+            } else if ((sel = doc.selection) && sel.type != "Control") {
+                var textRange = sel.createRange();
+                var preCaretTextRange = doc.body.createTextRange();
+                preCaretTextRange.moveToElementText(element);
+                preCaretTextRange.setEndPoint("EndToEnd", textRange);
+                caretOffset = preCaretTextRange.text.length;
+            }
+            return caretOffset;
+        }
+
+        document.body.addEventListener('mouseup', function () {
+            if (typeof window.getSelection != 'undefined') {
+
+
+
+
+
+                var textareaText = $("#textEditor").text();
+                var start = getCaretCharacterOffsetWithin(document.getElementById("textEditor"));
+                console.log(start);
+                var textareaSellectedText = window.getSelection();
+
+                var range = textareaSellectedText.getRangeAt(0);
+                var startOffset = start - range.toString().length;
+                var endOffset = start;
+                var sel = textareaText.substring(startOffset, endOffset);
+
+                console.log("THis is the content: "+sel);
+                var replaceText = '<span id="bold" >' + textareaSellectedText + '</span>';
+
+                console.log("Text length: " + textareaText.length);
+                console.log("Selection start:" + startOffset);
+                console.log("Selection end:" + endOffset);
+
+                var firstText = textareaText.substring(0, startOffset);
+                var secondText = textareaText.substring(endOffset, textareaText.length);
+                console.log(firstText + " " + secondText);
+                var newContent = firstText + replaceText + secondText;
+
+                $("#textEditor").html(newContent);
+                
+            }
+        }, false);
+    </script>
+    <div id="textEditor" contenteditable="true">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</div>
+</div>
