@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
@@ -7,16 +7,25 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
     <style>
-        #textarea{
-            height:200px;
+        #menu button {
+            display: inline-block;
         }
 
-        #bold{
-            font-weight:bold;
+        #textEditor {
+            width: 500px;
+            height: 200px;
+        }
+
+        #bold {
+            font-weight: bold;
         }
     </style>
+
     <script>
+        $(document).ready(function ($) {
+
         function getCaretCharacterOffsetWithin(element) {
             var caretOffset = 0;
             var doc = element.ownerDocument || element.document;
@@ -41,24 +50,20 @@
             return caretOffset;
         }
 
-        document.body.addEventListener('mouseup', function () {
-            if (typeof window.getSelection != 'undefined') {
 
-
-
-
-
+        function applyChangesToSelectedText(sometext) {
+            if (typeof window.getSelection != "undefined") {
                 var textareaText = $("#textEditor").text();
                 var start = getCaretCharacterOffsetWithin(document.getElementById("textEditor"));
-                console.log(start);
-                var textareaSellectedText = window.getSelection();
 
+                var textareaSellectedText = window.getSelection();
                 var range = textareaSellectedText.getRangeAt(0);
                 var startOffset = start - range.toString().length;
                 var endOffset = start;
-                var sel = textareaText.substring(startOffset, endOffset);
+                //var sel = textareaText.substring(startOffset, endOffset);
 
-                console.log("THis is the content: "+sel);
+                //console.log("THis is the content: " + sel);
+
                 var replaceText = '<span id="bold" >' + textareaSellectedText + '</span>';
 
                 console.log("Text length: " + textareaText.length);
@@ -67,13 +72,40 @@
 
                 var firstText = textareaText.substring(0, startOffset);
                 var secondText = textareaText.substring(endOffset, textareaText.length);
-                console.log(firstText + " " + secondText);
-                var newContent = firstText + replaceText + secondText;
 
+                console.log(firstText + " " + secondText);
+
+                var newContent = firstText + replaceText + secondText;
                 $("#textEditor").html(newContent);
-                
+                $("#textEditor").focus();
+
+                var uid = document.getElementById('textEditor');
+                var range2 = document.createRange();
+
+                if (startOffset != 0) {
+                    range2.setStart(uid, 1);
+                    range2.setEnd(uid, 2);
+                } else {
+                    range2.setStart(uid, 0);
+                    range2.setEnd(uid, 1);
+                }
+
+                textareaSellectedText.removeAllRanges();
+                textareaSellectedText.addRange(range2);
             }
-        }, false);
+        }
+            document.getElementById("boldButton").addEventListener('click', function () {
+                applyChangesToSelectedText("bold");
+            }, false);
+        });
     </script>
-    <div id="textEditor" contenteditable="true">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</div>
+    <div>
+        <div id="menu">
+            <button id="boldButton">Bold</button>
+            <button id="Italize">Italize</button>
+        </div>
+    </div>
+    <div>
+        <div id="textEditor" contenteditable="true">This is a text editor</div>
+    </div>
 </div>
